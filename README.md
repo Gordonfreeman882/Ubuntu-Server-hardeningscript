@@ -1,4 +1,3 @@
-#################################################
 Ubuntu Harderscript v.0.0.1
 
 WARNING: Only German language available...
