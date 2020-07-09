@@ -193,32 +193,3 @@ break
 echo "Es wurde kein neuer Nutzer angelegt...Dann sind wir hier fertig!"
 echo "Es wurde kein neuer Nutzer angelegt" >> /tmp/harderscript.log
 esac
-#Deaktivierung des root Accounts noch nicht fertig
-
-
-
-#Herraus finden ob debian oder ubuntu
-#distro=$(hostnamectl | grep -i ubuntu >/dev/nul && echo Ubuntu || echo Debian)
-#if [ $distro = Ubuntu]
-#then#
-#  sudo su -
-#else
-#  su
-#fi
-
-#Installieren von updates/upgrades
-
-
-
-#clear
-#read username
-#echo "Neuer Nutzer "$username " wird erstellt"
-#adduser $username
-#
-#exit
-#clear
-#echo "Ich bin Nutzer" $whoami
-#echo "Deaktiviere Root Konto..."
-#sudo passwd -l root
-#echo "Root Konto deaktiviert!"
-#clear
