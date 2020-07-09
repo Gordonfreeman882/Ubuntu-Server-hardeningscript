@@ -1,14 +1,14 @@
 #!/bin/bash
 clear
-echo -e "-------------------------------------Systeminformationen-------------------------------------"
-echo -e "Hostname:\t\t"`hostname`
-echo -e "uptime:\t\t\t"`uptime | awk '{print $3,$4}' | sed 's/,//'`
-echo -e "Operating System:\t"`hostnamectl | grep "Operating System" | cut -d ' ' -f5-`
-echo -e "Kernel:\t\t\t"`uname -r`
-echo -e "Processor Name:\t\t"`awk -F':' '/^model name/ {print $2}' /proc/cpuinfo | uniq | sed -e 's/^[ \t]*//'`
-echo -e "Active User:\t\t"`w | cut -d ' ' -f1 | grep -v USER | xargs -n1`
-echo -e "System Main IP:\t\t"`hostname -I`
-echo -e "--------------------------------------------------------------------------------------------"
+echo "-------------------------------------Systeminformationen-------------------------------------"
+echo "Hostname:\t\t"`hostname`
+echo "uptime:\t\t\t"`uptime | awk '{print $3,$4}' | sed 's/,//'`
+echo "Operating System:\t"`hostnamectl | grep "Operating System" | cut -d ' ' -f5-`
+echo "Kernel:\t\t\t"`uname -r`
+echo "Processor Name:\t\t"`awk -F':' '/^model name/ {print $2}' /proc/cpuinfo | uniq | sed -e 's/^[ \t]*//'`
+echo "Active User:\t\t"`w | cut -d ' ' -f1 | grep -v USER | xargs -n1`
+echo "System Main IP:\t\t"`hostname -I`
+echo "--------------------------------------------------------------------------------------------"
 #Funtkion Warten und Bildschirm aufräumen
 clearandsleep() {
   sleep 4s
