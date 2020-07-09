@@ -29,7 +29,7 @@ nutzer=$(whoami)
 rot=root
 language=$(locale | grep LANGUAGE | cut -d= -f2 | cut -d_ -f1)
 echo $language
-if [ $rot = "root" ]
+if [ $nutzer = "root" ]
 then
   echo "Superuser erfolgreich angemeldet.";
   echo "Lege logfile an...";
