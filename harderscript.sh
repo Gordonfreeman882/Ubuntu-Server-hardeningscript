@@ -34,11 +34,9 @@ then
   echo "Superuser erfolgreich angemeldet.";
   echo "Lege logfile an...";
   touch /tmp/harderscript.log
-  echo "######################" >> /tmp/harderscript.log
+  echo "################################" >> /tmp/harderscript.log
   date >> /tmp/harderscript.log
   echo "root started script" >> /tmp/harderscript.log
-  echo "Starte updates..."
-
 else
   echo "Script muss als Root ausgeführt werden"
   exit 0
@@ -52,6 +50,7 @@ then
   echo "Internetverbindung vorhanden. Ping erfolgreich"
   clearandsleep
   #Installtion von Updates sowie von Paketen
+  echo "Starte updates..."
   apt update && apt upgrade -y
   echo "Updates erfolgreich durch geführt!"
   clearandsleep
@@ -158,6 +157,7 @@ do
 done
 clearandsleep
 echo "Installiere dpkg-dev und setzte Flags..."
+echo "Installiere dpkg-dev und setzte Flags..." >> /tmp/harderscript.log
 apt install dpkg-dev -y
 dpkg-buildflags --get CFLAGS
 dpkg-buildflags --get LDFLAGS
@@ -178,18 +178,21 @@ case $input in
      userverify=$(cat /etc/group | grep $username >/dev/null && echo JA || echo NEIN)
      if [ $userverify = "JA" ]
      then
-     echo "Es wurde ein neuer Nutzer " $username "angelegt."
-     echo "Es wurde ein neuer Nutzer " $username "angelegt." >> /tmp/harderscript.log
-     clearandsleep
-     echo "Es wird empfohlen sich als Nutzer" $username "anzumelden und das root Konto mit dem Befehl sudo passwd -l root zu deaktivieren!";
-     echo " Wir sind nun fertig. Ein Logfile befindet sich unter /tmp/harderscript.log :)"
+      echo "Es wurde ein neuer Nutzer " $username "angelegt."
+      echo "Es wurde ein neuer Nutzer " $username "angelegt." >> /tmp/harderscript.log
+      clearandsleep
+      echo "Es wird empfohlen sich als Nutzer" $username "anzumelden und das root Konto mit dem Befehl sudo passwd -l root zu deaktivieren!";
+      echo " Wir sind nun fertig. Ein Logfile befindet sich unter /tmp/harderscript.log"
+      echo "Ende" >> /tmp/harderscript.log
      else
-    echo "Kann Nutzer " $username "nicht in /etc/groups finden - bitte haendisch Prüfen!"
-    echo "Kann Nutzer " $username "nicht in /etc/groups finden - bitte haendisch Prüfen!" >> /tmp/harderscript.log
+      echo "Kann Nutzer " $username "nicht in /etc/groups finden - bitte haendisch Prüfen!"
+      echo "Kann Nutzer " $username "nicht in /etc/groups finden - bitte haendisch Prüfen!" >> /tmp/harderscript.log
+      echo "Ende" >> /tmp/harderscript.log
   fi
 break
 ;;
      [nN][oO]|[nN])
 echo "Es wurde kein neuer Nutzer angelegt...Dann sind wir hier fertig!"
 echo "Es wurde kein neuer Nutzer angelegt" >> /tmp/harderscript.log
+echo "Ende" >> /tmp/harderscript.log
 esac
