@@ -1,7 +1,7 @@
 Ubuntu Harderscript v.0.0.2
 
 Features:
-- Languageupport for german and english
+- Languagesupport for german and english
 - update system
 - install fail2ban, iptables-persistent, sudo, dpkg-dev
 - possible to install additional packages via name for apt during script routine
