@@ -8,7 +8,7 @@ echo "Kernel:\t\t\t"`uname -r`
 echo "Processor Name:\t\t"`awk -F':' '/^model name/ {print $2}' /proc/cpuinfo | uniq | sed -e 's/^[ \t]*//'`
 echo "Active User:\t\t"`w | cut -d ' ' -f1 | grep -v USER | xargs -n1`
 echo "System Main IP:\t\t"`hostname -I`
-echo "--------------------------------------------------------------------------------------------"
+echo "---------------------------------------------------------------------------------------------"
 #Funtkion Warten und Bildschirm aufräumen
 clearandsleep() {
   sleep 4s
@@ -27,8 +27,28 @@ paket() {
 #Welcher Nutzer bin ich? Nur root darf ausführen
 nutzer=$(whoami)
 rot=root
-language=$(locale | grep LANGUAGE | cut -d= -f2 | cut -d_ -f1)
-echo $language
+#Setting script language
+while true
+do
+read -r -p "Please select script language [DE/ENG]" input
+case $input in
+     [dD][eE]|[dD])
+     echo "Scriptsprache: Deutsch"
+     lang=de
+break
+;;
+    [eE][nN][gG]|[eE][nN])
+echo "Scriptlanguage: English"
+lang=en
+break
+;;
+    *)
+echo "Invalid input..."
+;;
+esac
+done
+if [ $lang = de ]
+then
 if [ $nutzer = "root" ]
 then
   echo "Superuser erfolgreich angemeldet.";
@@ -166,6 +186,8 @@ clearandsleep
 #Anlegen eines neuen Nutzers, Eintragung in sudoers Datei
 echo "Es wird empfohlen einen neuen Nutzer mit sudo-Rechten anzulegen!"
 clearandsleep
+while true
+do
 read -r -p "Soll ein neuer Benutzer mit Sudo-Rechten angelegt werden? [Y/n]" input
 case $input in
      [yY][eE][sS]|[yY])
@@ -195,4 +217,188 @@ break
 echo "Es wurde kein neuer Nutzer angelegt...Dann sind wir hier fertig!"
 echo "Es wurde kein neuer Nutzer angelegt" >> /tmp/harderscript.log
 echo "Ende" >> /tmp/harderscript.log
+break
+;;
+*)
+echo "Invalid input..."
+;;
 esac
+done
+#english part
+else
+  if [ $nutzer = "root" ]
+  then
+    echo "Superuser login sucessfull.";
+    echo "creating logfile...";
+    touch /tmp/harderscript.log
+    echo "################################" >> /tmp/harderscript.log
+    date >> /tmp/harderscript.log
+    echo "root started script" >> /tmp/harderscript.log
+  else
+    echo "Run this script as root user!"
+    exit 0
+  fi
+  clearandsleep
+  #Testen der Internetverbindung
+  inet=$(ping -c3 1.1.1.1 | grep -i 0% >/dev/null && echo JA || echo Nein)
+  if [ $inet = "JA" ]
+  then
+    ping -c3 1.1.1.1 | grep -i 0% >> /tmp/harderscript.log
+    echo "Internetconnection established. Ping successfull"
+    clearandsleep
+    #Installation von Updates sowie von Paketen
+    echo "Starting updates..."
+    apt update && apt upgrade -y
+    echo "Updates applied successfully"
+    clearandsleep
+    paket
+  else
+    echo "Bad or no internetconnection"
+    echo "Bad or no internetconnection" >> /tmp/harderscript.log
+    clearandsleep
+    echo "We will try to go on..."
+    apt update && apt upgrade -y
+    clearandsleep
+    paket
+  fi
+  #Prüfung ob Programme installiert wurden
+  echo "Testing if programms were installed sucessfully..."
+  fail2ban=`type -p fail2ban-server`
+  if [ ! -f "$fail2ban" ]; then
+    echo "Fail2ban missing.."
+  else
+    echo "Fail2ban ready!"
+  fi
+  iptablesper=$(apt install iptables-persistent | grep -i "newest" >/dev/null && echo JA || echo NEIN)
+  if [ $iptablesper = "JA" ]
+  then
+    echo "iptables-persistent ready!"
+    echo "iptables ready" >> /tmp/harderscript.log
+  else
+    echo "iptables-persistent missing.."
+    echo "iptables missing?" >> /tmp/harderscript.log
+  fi
+  sudo=`type -p sudo`
+  if [ ! -f "$sudo" ]; then
+    echo "sudo missing..Starting installation"
+    apt install sudo -y
+    echo "sudo installed" >> /tmp/harderscript
+  else
+    echo "sudo ready!"
+  fi
+  #Zusätzliche Installation von Paketen
+  y=1
+  i=0
+  while [ $y = 1 ]
+  do
+  clearandsleep
+  echo "Do you want to install more programms/packages? (iftop,screen) [Y/N]"
+  read package
+  if [ $package = "N" ] || [ $package = "n" ]
+  then
+    clear
+    if [ $i = 0 ]
+    then
+      echo "No additional programm will be installed."
+      clearandsleep
+    else
+      echo "No additional programms will be installed.."
+      clearandsleep
+    fi
+    y=2
+  else
+    clear
+    i=$((i + 1 ))
+    echo "Please enter the packagename:" $i
+    read packagename
+    #echo $packagename | cut -d ',' -f1-*
+    echo "Package" $packagename "will be installed"
+    apt install $packagename -y
+    echo "additional package" $packagename >> /tmp/harderscript.log
+    clearandsleep
+    echo "Testing if " $packagename "is ready...(!unstable!)"
+    varpackage=`type -p $packagename`
+    if [ ! -f "$packagename" ]; then
+      echo $packagename " missing.."
+      clearandsleep
+    else
+      echo $packagename " ready!"
+      clearandsleep
+    fi
+  fi
+  done
+  #SSH root login deaktivieren
+  echo "Trying to find sshd_config...."
+  path=$(find /etc -name sshd_config)
+  echo $path
+  while true
+  do
+   read -r -p "Is that the correct path? [Y/n] " input
+
+   case $input in
+       [yY][eE][sS]|[yY])
+   echo "Forbid Root Login via SSH"
+   sed -i -e 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' $path
+   echo "Forbid SSH Rootlogin" >> /tmp/harderscript.log
+   break
+   ;;
+       [nN][oO]|[nN])
+   echo "Please try manualy to disable Rootlogin via SSH in the SSHD_CONFIG -File"
+   echo "SSH Rootlogin still allowed" >> /tmp/harderscript.log
+   break
+          ;;
+       *)
+   echo "Invalid input..."
+   ;;
+   esac
+  done
+  clearandsleep
+  echo "Installation of dpkg-dev and setting some flags..."
+  echo "Installation of dpkg-dev and setting some flags..." >> /tmp/harderscript.log
+  apt install dpkg-dev -y
+  dpkg-buildflags --get CFLAGS
+  dpkg-buildflags --get LDFLAGS
+  dpkg-buildflags --get CPPFLAGS
+  clearandsleep
+  #Anlegen eines neuen Nutzers, Eintragung in sudoers Datei
+  echo "It is recommended to setup a new user with root privileges!"
+  clearandsleep
+  while true
+  do
+  read -r -p "Should we create a new user? [Y/n]" input
+  case $input in
+       [yY][eE][sS]|[yY])
+       echo "Please enter the username:"
+       read username
+       sudo adduser $username --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
+       echo ""$username":password" | sudo chpasswd
+       usermod -aG sudo $username
+       clearandsleep
+       userverify=$(cat /etc/group | grep $username >/dev/null && echo JA || echo NEIN)
+       if [ $userverify = "JA" ]
+       then
+        echo "Created new user " $username "."
+        echo "Created new user " $username "." >> /tmp/harderscript.log
+        clearandsleep
+        echo "It is recommended to login as" $username " to disable the rootuser with the command: sudo passwd -l root";
+        echo "Now we have finished. You can find a logfile under /tmp/harderscript.log"
+        echo "Finish" >> /tmp/harderscript.log
+       else
+        echo "Can not find " $username " in /etc/groups - please take a look manually"
+        echo "Can not find " $username " in /etc/groups - please take a look manually" >> /tmp/harderscript.log
+        echo "Finish" >> /tmp/harderscript.log
+    fi
+  break
+  ;;
+       [nN][oO]|[nN])
+  echo "No additional user was created...Looks like we have finished!"
+  echo "No additional user was created" >> /tmp/harderscript.log
+  echo "Finish" >> /tmp/harderscript.log
+  break
+  ;;
+*)
+echo "Invalid input..."
+;;
+esac
+done
+fi
