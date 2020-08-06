@@ -1,23 +1,22 @@
-Ubuntu Harderscript v.0.0.1
-
-WARNING: Only German language available...
+Ubuntu Harderscript v.0.0.2
 
 Features:
-- update System
+- Languageupport for german and english
+- update system
 - install fail2ban, iptables-persistent, sudo, dpkg-dev
 - possible to install additional packages via name for apt during script routine
 - if wanted deactivate root-login on ssh-server
-- set different dpkg-buildlfags
-- create new user with sudo rights
+- sets automaticly different dpkg-buildlfags
+- if wanted creates new user with sudo rights
 - log file under /tmp/harderscript.log
 
 Requirements:
-- Tested on fresh installed Ubuntu 18.04 LTS, 16.04 LTS
-- run script as root
+- Tested on fresh installed Ubuntu 18.04 LTS, 16.04 LTS [Server]
+- run script as root or user with root priviliges
 - optional but important, openssh-server
 
 Future updates
-- multilanguage mode -> Support for english
+- smarter language detection routine
 - support for Debian
 
 
