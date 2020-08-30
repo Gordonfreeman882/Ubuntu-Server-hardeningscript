@@ -224,6 +224,12 @@ echo "Invalid input..."
 ;;
 esac
 done
+clearandsleep
+echo "#######################################################################################"
+echo ""
+echo "Es wird dringend empfohlen die SSH authtifizierung via PUB-Key-Verfahren einzustellen!"
+echo ""
+echo "#######################################################################################"
 #english part
 else
   if [ $nutzer = "root" ]
@@ -401,4 +407,10 @@ echo "Invalid input..."
 ;;
 esac
 done
+clearandsleep
+echo "######################################################################################"
+echo ""
+echo "It is recommended to set up SSH-authtification over PUB-key-system!"
+echo ""
+echo "######################################################################################"
 fi
