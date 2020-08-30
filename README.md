@@ -1,4 +1,4 @@
-Ubuntu Harderscript v.0.0.2
+Ubuntu Harderscript v.0.0.3
 
 Features:
 - Languagesupport for german and english
@@ -11,6 +11,7 @@ Optional features:
 - install additional packages via name for apt during script routine
 - deactivate root-login on ssh-server
 - creates new user with sudo rights
+- rootkit-search with rkhunter
 
 Requirements:
 - Tested on fresh installed Ubuntu 18.04 LTS, 16.04 LTS [Server]
@@ -21,5 +22,6 @@ Future updates
 - smarter language detection routine
 - support for Debian
 - colorful output where it is needed
+- clean up process for uneeded packages through apt
 
 Feel free to improve or to add usefull parts. 
