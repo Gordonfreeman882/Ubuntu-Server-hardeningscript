@@ -38,7 +38,7 @@ case $input in
 break
 ;;
     [eE][nN][gG]|[eE][nN])
-echo "Scriptlanguage: English"
+echo "Scriptlanguage: english"
 lang=en
 break
 ;;
@@ -161,7 +161,7 @@ do
  case $input in
      [yY][eE][sS]|[yY])
  echo "Verbiete Root Login via SSH"
- sed -i -e 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' $path
+ sed -i -e 's/#PermitRootLogin prohibit-password/PermitRootLogin no/g' $path
  echo "SSH Rootlogin verboten" >> /tmp/harderscript.log
  break
  ;;
@@ -182,6 +182,30 @@ apt install dpkg-dev -y
 dpkg-buildflags --get CFLAGS
 dpkg-buildflags --get LDFLAGS
 dpkg-buildflags --get CPPFLAGS
+clearandsleep
+while true
+do
+read -r -p "Soll mittels rkhunter das System auf Schwachstellen, Rootkits etc untersucht werden? !rkhunter wird installiert! [Y/N]" input
+case $input in
+     [yY][eE][sS]|[yY])
+     apt install rkhunter -y
+     clear
+     rkhunter -c --vl --sk
+     echo "Logfile unter: /var/log/rkhunter.log"
+     echo "Logfile unter: /var/log/rkhunter.log" >> /tmp/harderscript.log
+     break
+     ;;
+     [nN][oO]|[nN])
+     clear
+     echo "rkhunter scan wird nicht ausgeführt"
+     echo "skip rkhunter scan" >> /tmp/harderscript.log
+     break
+     ;;
+     *)
+     echo "Invalid input..."
+     ;;
+     esac
+     done
 clearandsleep
 #Anlegen eines neuen Nutzers, Eintragung in sudoers Datei
 echo "Es wird empfohlen einen neuen Nutzer mit sudo-Rechten anzulegen!"
@@ -230,6 +254,15 @@ echo ""
 echo "Es wird dringend empfohlen die SSH authtifizierung via PUB-Key-Verfahren einzustellen!"
 echo ""
 echo "#######################################################################################"
+clearandsleep
+echo "##########################################################################################################"
+echo ""
+echo "Logsfiles befinden sich unter: /tmp/harderscript.log"
+echo ""
+echo "Nach dem lesen der Logfiles bitte das Systemneustarten um die neue Konfiguration abschließend zu laden!"
+echo ""
+echo "#########################################################################################################"
+
 #english part
 else
   if [ $nutzer = "root" ]
@@ -344,7 +377,7 @@ else
    case $input in
        [yY][eE][sS]|[yY])
    echo "Forbid Root Login via SSH"
-   sed -i -e 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' $path
+   sed -i -e 's/#PermitRootLogin prohibit-password/PermitRootLogin no/g' $path
    echo "Forbid SSH Rootlogin" >> /tmp/harderscript.log
    break
    ;;
@@ -365,6 +398,30 @@ else
   dpkg-buildflags --get CFLAGS
   dpkg-buildflags --get LDFLAGS
   dpkg-buildflags --get CPPFLAGS
+  clearandsleep
+  while true
+  do
+  read -r -p "Should we scan the system for rootkits? !rkhunter will be installed! [Y/N]" input
+  case $input in
+       [yY][eE][sS]|[yY])
+       apt install rkhunter -y
+       clear
+       rkhunter -c --vl --sk
+       echo "Logfile unter: /var/log/rkhunter.log"
+       echo "Logfile unter: /var/log/rkhunter.log" >> /tmp/harderscript.log
+       break
+       ;;
+       [nN][oO]|[nN])
+       clear
+       echo "rkhunter scan wird nicht ausgeführt"
+       echo "skip rkhunter scan" >> /tmp/harderscript.log
+       break
+       ;;
+       *)
+       echo "Invalid input..."
+       ;;
+   esac
+  done
   clearandsleep
   #Anlegen eines neuen Nutzers, Eintragung in sudoers Datei
   echo "It is recommended to setup a new user with root privileges!"
@@ -411,6 +468,14 @@ clearandsleep
 echo "######################################################################################"
 echo ""
 echo "It is recommended to set up SSH-authtification over PUB-key-system!"
+echo ""
+echo "######################################################################################"
+clearandsleep
+echo "######################################################################################"
+echo ""
+echo "Logs can be found under /tmp/harderscript.log"
+echo ""
+echo "Afer reading the logfile please reboot the system to load up all new configurations!"
 echo ""
 echo "######################################################################################"
 fi

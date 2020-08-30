@@ -20,6 +20,6 @@ Requirements:
 Future updates
 - smarter language detection routine
 - support for Debian
-
+- colorful output where it is needed
 
 Feel free to improve or to add usefull parts. 
