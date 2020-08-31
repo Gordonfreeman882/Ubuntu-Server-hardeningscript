@@ -1,4 +1,4 @@
-Ubuntu Harderscript v.0.0.3
+Ubuntu Harderscript v.0.0.4
 
 Features:
 - Languagesupport for german and english
@@ -6,12 +6,14 @@ Features:
 - install fail2ban, iptables-persistent, sudo, dpkg-dev
 - sets automaticly different dpkg-buildlfags
 - log file under /tmp/harderscript.log
+- clean up process for uneeded packages through apt
 
 Optional features:
 - install additional packages via name for apt during script routine
 - deactivate root-login on ssh-server
 - creates new user with sudo rights
 - rootkit-search with rkhunter
+- setup ssh login banner
 
 Requirements:
 - Tested on fresh installed Ubuntu 18.04 LTS, 16.04 LTS [Server]
@@ -21,7 +23,6 @@ Requirements:
 Future updates
 - smarter language detection routine
 - support for Debian
-- colorful output where it is needed
-- clean up process for uneeded packages through apt
+- improve colorful output 
 
 Feel free to improve or to add usefull parts. 
