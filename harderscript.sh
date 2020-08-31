@@ -1,4 +1,8 @@
 #!/bin/bash
+#var
+NOCOLOR='\033[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
 clear
 echo "-------------------------------------Systeminformationen-------------------------------------"
 echo "Hostname:\t\t"`hostname`
@@ -51,14 +55,14 @@ if [ $lang = de ]
 then
 if [ $nutzer = "root" ]
 then
-  echo "Superuser erfolgreich angemeldet.";
+  echo "${GREEN}Superuser erfolgreich angemeldet.${NOCOLOR}";
   echo "Lege logfile an...";
   touch /tmp/harderscript.log
   echo "################################" >> /tmp/harderscript.log
   date >> /tmp/harderscript.log
   echo "root started script" >> /tmp/harderscript.log
 else
-  echo "Script muss als Root ausgeführt werden"
+  echo "${RED}Script muss als Root ausgeführt werden${NOCOLOR}"
   exit 0
 fi
 clearandsleep
@@ -67,16 +71,18 @@ inet=$(ping -c3 1.1.1.1 | grep -i 0% >/dev/null && echo JA || echo Nein)
 if [ $inet = "JA" ]
 then
   ping -c3 1.1.1.1 | grep -i 0% >> /tmp/harderscript.log
-  echo "Internetverbindung vorhanden. Ping erfolgreich"
+  echo "${GREEN}Internetverbindung vorhanden. Ping erfolgreich${NOCOLOR}"
   clearandsleep
   #Installtion von Updates sowie von Paketen
   echo "Starte updates..."
+  sleep 2s
+  clear
   apt update && apt upgrade -y
-  echo "Updates erfolgreich durch geführt!"
+  echo "${GREEN}Updates erfolgreich durch geführt!${NOCOLOR}"
   clearandsleep
   paket
 else
-  echo "Schlechte oder keine Internetverbindung"
+  echo "${RED}Schlechte oder keine Internetverbindung${NOCOLOR}"
   echo "Schlechte oder keine Internetverbindung" >> /tmp/harderscript.log
   clearandsleep
   echo "Setzte Script fort..."
@@ -86,11 +92,12 @@ else
 fi
 #Prüfung ob Programme installiert wurden
 echo "Prüfe ob Programme Ordnungsgemäß installiert wurden..."
+clearandsleep
 fail2ban=`type -p fail2ban-server`
 if [ ! -f "$fail2ban" ]; then
-  echo "Fail2ban missing.."
+  echo "${RED}Fail2ban könnte fehlen..${NOCOLOR}"
 else
-  echo "Fail2ban vorhanden!"
+  echo "${GREEN}Fail2ban vorhanden!${NOCOLOR}"
 fi
 iptablesper=$(apt install iptables-persistent | grep -i "ist schon die neueste Version" >/dev/null && echo JA || echo NEIN)
 if [ $iptablesper = "JA" ]
@@ -98,16 +105,18 @@ then
   echo "iptables-persistent vorhanden!"
   echo "iptables vorhanden" >> /tmp/harderscript.log
 else
-  echo "iptables-persistent missing.."
+  echo "${RED}iptables-persistent missing..${NOCOLOR}"
   echo "iptables fehlt?" >> /tmp/harderscript.log
 fi
 sudo=`type -p sudo`
 if [ ! -f "$sudo" ]; then
   echo "sudo missing..Installiere"
+  sleep 2s
+  clear
   apt install sudo -y
   echo "sudo installiert" >> /tmp/harderscript
 else
-  echo "sudo vorhanden!"
+  echo "${GREEN}sudo vorhanden!${NOCOLOR}"
 fi
 #Zusätzliche Installation von Paketen
 y=1
@@ -166,7 +175,8 @@ do
  break
  ;;
      [nN][oO]|[nN])
- echo "SSH Rootlogin bitte haendisch deaktivieren in SSHD_CONFIG unter PermitRootLogin"
+ clear
+ echo "${RED}SSH Rootlogin bitte haendisch deaktivieren in SSHD_CONFIG unter PermitRootLogin${NOCOLOR}"
  echo "SSH Rootlogin weiterhin moeglich" >> /tmp/harderscript.log
  break
         ;;
@@ -175,6 +185,78 @@ do
  ;;
  esac
 done
+clearandsleep
+echo "Achtung dieses Banner kann für den SSH-Login eingestellt werden!"
+clearandsleep
+echo "                                                                #####
+                                                               #######
+                  @                                            ##O#O##
+ ######          @@#                                           #VVVVV#
+   ##             #                                          ##  VVV  ##
+   ##         @@@   ### ####   ###    ###  ##### ######     #          ##
+   ##        @  @#   ###    ##  ##     ##    ###  ##       #            ##
+   ##       @   @#   ##     ##  ##     ##      ###         #            ###
+   ##          @@#   ##     ##  ##     ##      ###        QQ#           ##Q
+   ##       # @@#    ##     ##  ##     ##     ## ##     QQQQQQ#       #QQQQQQ
+   ##      ## @@# #  ##     ##  ###   ###    ##   ##    QQQQQQQ#     #QQQQQQQ
+ ############  ###  ####   ####   #### ### ##### ######   QQQQQ#######QQQQQ
+
+    ********************************************************************
+    *                                                                  *
+    * This system is for the use of authorized users only.  Usage of   *
+    * this system may be monitored and recorded by system personnel.   *
+    *                                                                  *
+    * Anyone using this system expressly consents to such monitoring   *
+    * and is advised that if such monitoring reveals possible          *
+    * evidence of criminal activity, system personnel may provide the  *
+    * evidence from such monitoring to law enforcement officials.      *
+    *                                                                  *
+    ********************************************************************"
+sleep 2s
+clearandsleep
+while true
+do
+  read -r -p "Soll das Login-Banner für den SSH-Login verwendet werden? [Y/n] " input
+  case $input in
+        [yY][eE][sS]|[yY])
+        echo "Banner /etc/issue.net" >> $path
+        echo "                                                                     #####
+                                                                    #######
+                       @                                            ##O#O##
+      ######          @@#                                           #VVVVV#
+        ##             #                                          ##  VVV  ##
+        ##         @@@   ### ####   ###    ###  ##### ######     #          ##
+        ##        @  @#   ###    ##  ##     ##    ###  ##       #            ##
+        ##       @   @#   ##     ##  ##     ##      ###         #            ###
+        ##          @@#   ##     ##  ##     ##      ###        QQ#           ##Q
+        ##       # @@#    ##     ##  ##     ##     ## ##     QQQQQQ#       #QQQQQQ
+        ##      ## @@# #  ##     ##  ###   ###    ##   ##    QQQQQQQ#     #QQQQQQQ
+      ############  ###  ####   ####   #### ### ##### ######   QQQQQ#######QQQQQ
+
+         ********************************************************************
+         *                                                                  *
+         * This system is for the use of authorized users only.  Usage of   *
+         * this system may be monitored and recorded by system personnel.   *
+         *                                                                  *
+         * Anyone using this system expressly consents to such monitoring   *
+         * and is advised that if such monitoring reveals possible          *
+         * evidence of criminal activity, system personnel may provide the  *
+         * evidence from such monitoring to law enforcement officials.      *
+         *                                                                  *
+         ********************************************************************" >> /etc/issue.net
+         echo "SSH Banner eingestellt" >> /tmp/harderscript.log
+         break
+         ;;
+         [nN][oO]|[nN])
+         echo "SSH Banner verwurfen"
+         echo "SSH Banner verwurfen" >> /tmp/harderscript.log
+         break
+         ;;
+         *)
+         echo "Invalid input..."
+         ;;
+       esac
+     done
 clearandsleep
 echo "Installiere dpkg-dev und setzte Flags..."
 echo "Installiere dpkg-dev und setzte Flags..." >> /tmp/harderscript.log
@@ -197,7 +279,7 @@ case $input in
      ;;
      [nN][oO]|[nN])
      clear
-     echo "rkhunter scan wird nicht ausgeführt"
+     echo "rkhunter scan wird nicht ausgeführt!"
      echo "skip rkhunter scan" >> /tmp/harderscript.log
      break
      ;;
@@ -212,7 +294,7 @@ echo "Es wird empfohlen einen neuen Nutzer mit sudo-Rechten anzulegen!"
 clearandsleep
 while true
 do
-read -r -p "Soll ein neuer Benutzer mit Sudo-Rechten angelegt werden? [Y/n]" input
+read -r -p "Soll ein neuer Benutzer mit Sudo-Rechten angelegt werden? [Y/N]" input
 case $input in
      [yY][eE][sS]|[yY])
      echo "Bitte geben Sie den Nutzernamen ein:"
@@ -248,6 +330,9 @@ echo "Invalid input..."
 ;;
 esac
 done
+clear
+apt clean
+apt autoremove -y
 clearandsleep
 echo "#######################################################################################"
 echo ""
@@ -259,7 +344,7 @@ echo "##########################################################################
 echo ""
 echo "Logsfiles befinden sich unter: /tmp/harderscript.log"
 echo ""
-echo "Nach dem lesen der Logfiles bitte das Systemneustarten um die neue Konfiguration abschließend zu laden!"
+echo "Nach dem lesen der Logfiles bitte das System neustarten um die neue Konfiguration abschließend zu laden!"
 echo ""
 echo "#########################################################################################################"
 
@@ -267,7 +352,7 @@ echo "##########################################################################
 else
   if [ $nutzer = "root" ]
   then
-    echo "Superuser login sucessfull.";
+    echo "${GREEN}Superuser login sucessfull.${NOCOLOR}";
     echo "creating logfile...";
     touch /tmp/harderscript.log
     echo "################################" >> /tmp/harderscript.log
@@ -283,16 +368,18 @@ else
   if [ $inet = "JA" ]
   then
     ping -c3 1.1.1.1 | grep -i 0% >> /tmp/harderscript.log
-    echo "Internetconnection established. Ping successfull"
+    echo "${GREEN}Internetconnection established. Ping successfull${NOCOLOR}"
     clearandsleep
     #Installation von Updates sowie von Paketen
     echo "Starting updates..."
+    sleep 2s
+    clear
     apt update && apt upgrade -y
-    echo "Updates applied successfully"
+    echo "${GREEN}Updates applied successfully${NOCOLOR}"
     clearandsleep
     paket
   else
-    echo "Bad or no internetconnection"
+    echo "${RED}Bad or no internetconnection${NOCOLOR}"
     echo "Bad or no internetconnection" >> /tmp/harderscript.log
     clearandsleep
     echo "We will try to go on..."
@@ -304,17 +391,17 @@ else
   echo "Testing if programms were installed sucessfully..."
   fail2ban=`type -p fail2ban-server`
   if [ ! -f "$fail2ban" ]; then
-    echo "Fail2ban missing.."
+    echo "Fail2ban cloud be missing.."
   else
-    echo "Fail2ban ready!"
+    echo "${GREEN}Fail2ban ready!${NOCOLOR}"
   fi
   iptablesper=$(apt install iptables-persistent | grep -i "newest" >/dev/null && echo JA || echo NEIN)
   if [ $iptablesper = "JA" ]
   then
-    echo "iptables-persistent ready!"
+    echo "${GREEN}iptables-persistent ready!${NOCOLOR}"
     echo "iptables ready" >> /tmp/harderscript.log
   else
-    echo "iptables-persistent missing.."
+    echo "${RED}iptables-persistent missing..${NOCOLOR}"
     echo "iptables missing?" >> /tmp/harderscript.log
   fi
   sudo=`type -p sudo`
@@ -382,7 +469,9 @@ else
    break
    ;;
        [nN][oO]|[nN])
-   echo "Please try manualy to disable Rootlogin via SSH in the SSHD_CONFIG -File"
+   clear
+   echo "${RED}Please try manualy to disable Rootlogin via SSH in the SSHD_CONFIG -File${NOCOLOR}"
+   sleep 2s
    echo "SSH Rootlogin still allowed" >> /tmp/harderscript.log
    break
           ;;
@@ -392,6 +481,78 @@ else
    esac
   done
   clearandsleep
+  echo "Attention! This banner can be used for SSH-login!"
+  clearandsleep
+  echo "                                                                   #####
+                                                                 #######
+                    @                                            ##O#O##
+   ######          @@#                                           #VVVVV#
+     ##             #                                          ##  VVV  ##
+     ##         @@@   ### ####   ###    ###  ##### ######     #          ##
+     ##        @  @#   ###    ##  ##     ##    ###  ##       #            ##
+     ##       @   @#   ##     ##  ##     ##      ###         #            ###
+     ##          @@#   ##     ##  ##     ##      ###        QQ#           ##Q
+     ##       # @@#    ##     ##  ##     ##     ## ##     QQQQQQ#       #QQQQQQ
+     ##      ## @@# #  ##     ##  ###   ###    ##   ##    QQQQQQQ#     #QQQQQQQ
+   ############  ###  ####   ####   #### ### ##### ######   QQQQQ#######QQQQQ
+
+      ********************************************************************
+      *                                                                  *
+      * This system is for the use of authorized users only.  Usage of   *
+      * this system may be monitored and recorded by system personnel.   *
+      *                                                                  *
+      * Anyone using this system expressly consents to such monitoring   *
+      * and is advised that if such monitoring reveals possible          *
+      * evidence of criminal activity, system personnel may provide the  *
+      * evidence from such monitoring to law enforcement officials.      *
+      *                                                                  *
+      ********************************************************************"
+  sleep 2s
+  clearandsleep
+  while true
+  do
+    read -r -p "Do you want to use this for SSH-login? [Y/n] " input
+    case $input in
+          [yY][eE][sS]|[yY])
+          echo "Banner /etc/issue.net" >> $path
+          echo "                                                                       #####
+                                                                      #######
+                         @                                            ##O#O##
+        ######          @@#                                           #VVVVV#
+          ##             #                                          ##  VVV  ##
+          ##         @@@   ### ####   ###    ###  ##### ######     #          ##
+          ##        @  @#   ###    ##  ##     ##    ###  ##       #            ##
+          ##       @   @#   ##     ##  ##     ##      ###         #            ###
+          ##          @@#   ##     ##  ##     ##      ###        QQ#           ##Q
+          ##       # @@#    ##     ##  ##     ##     ## ##     QQQQQQ#       #QQQQQQ
+          ##      ## @@# #  ##     ##  ###   ###    ##   ##    QQQQQQQ#     #QQQQQQQ
+        ############  ###  ####   ####   #### ### ##### ######   QQQQQ#######QQQQQ
+
+           ********************************************************************
+           *                                                                  *
+           * This system is for the use of authorized users only.  Usage of   *
+           * this system may be monitored and recorded by system personnel.   *
+           *                                                                  *
+           * Anyone using this system expressly consents to such monitoring   *
+           * and is advised that if such monitoring reveals possible          *
+           * evidence of criminal activity, system personnel may provide the  *
+           * evidence from such monitoring to law enforcement officials.      *
+           *                                                                  *
+           ********************************************************************" >> /etc/issue.net
+           echo "Setup SSH banner!" >> /tmp/harderscript.log
+           break
+           ;;
+           [nN][oO]|[nN])
+           echo "Didnt setup banner!"
+           echo "Didnt setup banner!" >> /tmp/harderscript.log
+           break
+           ;;
+           *)
+           echo "Invalid input..."
+           ;;
+         esac
+       done
+      clearandsleep
   echo "Installation of dpkg-dev and setting some flags..."
   echo "Installation of dpkg-dev and setting some flags..." >> /tmp/harderscript.log
   apt install dpkg-dev -y
@@ -413,7 +574,7 @@ else
        ;;
        [nN][oO]|[nN])
        clear
-       echo "rkhunter scan wird nicht ausgeführt"
+       echo "will not run rootkit search"
        echo "skip rkhunter scan" >> /tmp/harderscript.log
        break
        ;;
@@ -464,6 +625,9 @@ echo "Invalid input..."
 ;;
 esac
 done
+clear
+apt clean
+apt autoremove -y
 clearandsleep
 echo "######################################################################################"
 echo ""
