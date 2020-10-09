@@ -23,12 +23,56 @@ paket() {
   echo "Versuche fail2banserver zu installieren..."
   apt install fail2ban -y
   clearandsleep
-  echo "Versuche iptables-persistent zu installieren..."
-  apt install  iptables-persistent -y
-  clearandsleep
-  echo "Updates und default Pakete sollten installiert sein" >> /tmp/harderscript.log
+  while true
+  do
+  if [ $lang = de ]
+  then
+    read -r -p "Soll iptables-persistent installiert werden [y/n]" input
+  else
+    read -r -p "Do you want iptables-persistent to be installed [y/n]" input
+  fi
+  case $input in
+       [yY][eE][sS]|[yY])
+       clear
+       if [ $lang = de ]
+       then
+        echo "Installiere iptables-persistent"
+        apt install iptables-persistent -y
+        clearandsleep
+        echo "Updates und default Pakete sollten installiert sein" >> /tmp/harderscript.log
+       else
+        clear
+        echo "Installing iptables-persistent"
+        apt install iptables-persistent -y
+        clearandsleep
+        echo "Updates und default packages were installed" >> /tmp/harderscript.log
+      fi
+  break
+  ;;
+      [nN][oO]|[nN])
+      clear
+      if [ $lang = de ]
+      then
+        echo "Iptables-persistent wird nicht installiert!"
+        echo "Updates sind installiert, iptables-persistent wurde nicht installiert!" >> /tmp/harderscript.log
+        iptables=0
+      else
+        clear
+        echo "I will not install iptables-persistent!"
+        echo "Packages updated, iptables-persistent not installed!" >> /tmp/harderscript.log
+        iptables=0
+      fi
+  break
+  ;;
+      *)
+      echo "Invalid input..."
+      ;;
+esac
+done
+clearandsleep
 }
-#Welcher Nutzer bin ich? Nur root darf ausführen
+
+#Welcher Nutzer bin ich?
 nutzer=$(whoami)
 rot=root
 #Setting script language
@@ -91,7 +135,7 @@ else
   paket
 fi
 #Prüfung ob Programme installiert wurden
-echo "Prüfe ob Programme Ordnungsgemäß installiert wurden..."
+echo "Prüfe ob Programme Ordnungsgemäß installiert wurden...${RED}!(unstable)!${NOCOLOR}"
 clearandsleep
 fail2ban=`type -p fail2ban-server`
 if [ ! -f "$fail2ban" ]; then
@@ -99,6 +143,10 @@ if [ ! -f "$fail2ban" ]; then
 else
   echo "${GREEN}Fail2ban vorhanden!${NOCOLOR}"
 fi
+if [ $iptables = 0 ]
+then
+  echo "Iptables nicht zu installation ausgewählt" >> /tmp/harderscript.log
+else
 iptablesper=$(apt install iptables-persistent | grep -i "ist schon die neueste Version" >/dev/null && echo JA || echo NEIN)
 if [ $iptablesper = "JA" ]
 then
@@ -108,9 +156,11 @@ else
   echo "${RED}iptables-persistent missing..${NOCOLOR}"
   echo "iptables fehlt?" >> /tmp/harderscript.log
 fi
+fi
+clearandsleep
 sudo=`type -p sudo`
 if [ ! -f "$sudo" ]; then
-  echo "sudo missing..Installiere"
+  echo "${RED}sudo missing..${NOCOLOR}Installiere"
   sleep 2s
   clear
   apt install sudo -y
@@ -257,6 +307,7 @@ do
          ;;
        esac
      done
+
 clearandsleep
 echo "Installiere dpkg-dev und setzte Flags..."
 echo "Installiere dpkg-dev und setzte Flags..." >> /tmp/harderscript.log
@@ -388,13 +439,14 @@ else
     paket
   fi
   #Prüfung ob Programme installiert wurden
-  echo "Testing if programms were installed sucessfully..."
+  echo "Testing if programms were installed sucessfully...${RED}!(unstable)${NOCOLOR}"
   fail2ban=`type -p fail2ban-server`
   if [ ! -f "$fail2ban" ]; then
-    echo "Fail2ban cloud be missing.."
+    echo "${RED}Fail2ban cloud be missing..${NOCOLOR}"
   else
     echo "${GREEN}Fail2ban ready!${NOCOLOR}"
   fi
+  clearandsleep
   iptablesper=$(apt install iptables-persistent | grep -i "newest" >/dev/null && echo JA || echo NEIN)
   if [ $iptablesper = "JA" ]
   then
@@ -404,14 +456,16 @@ else
     echo "${RED}iptables-persistent missing..${NOCOLOR}"
     echo "iptables missing?" >> /tmp/harderscript.log
   fi
+  clearandsleep
   sudo=`type -p sudo`
   if [ ! -f "$sudo" ]; then
-    echo "sudo missing..Starting installation"
+    echo "${RED}sudo missing..${NOCOLOR}Starting installation"
     apt install sudo -y
     echo "sudo installed" >> /tmp/harderscript
   else
     echo "sudo ready!"
   fi
+  clearandsleep
   #Zusätzliche Installation von Paketen
   y=1
   i=0
