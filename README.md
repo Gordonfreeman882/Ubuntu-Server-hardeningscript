@@ -1,4 +1,4 @@
-Ubuntu Harderscript v.0.0.5
+Ubuntu Harderscript v.0.0.6
 
 Features:
 - languagesupport for german and english
@@ -17,7 +17,7 @@ Optional features:
 - setup ssh login banner
 
 Requirements:
-- tested on fresh installed Ubuntu 18.04 LTS, 16.04 LTS [Server]
+- tested on fresh installed Ubuntu 20.04 LTS 18.04 LTS, 16.04 LTS [Server]
 - run script as root or as user with root priviliges
 - optional but important, openssh-server
 

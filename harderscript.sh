@@ -138,14 +138,14 @@ fi
 echo "Prüfe ob Programme Ordnungsgemäß installiert wurden...${RED}!(unstable)!${NOCOLOR}"
 clearandsleep
 fail2ban=`type -p fail2ban-server`
-if [ ! -f "$fail2ban" ]; then
+if [ ! -f $fail2ban ]; then
   echo "${RED}Fail2ban könnte fehlen..${NOCOLOR}"
 else
   echo "${GREEN}Fail2ban vorhanden!${NOCOLOR}"
 fi
 if [ $iptables = 0 ]
 then
-  echo "Iptables nicht zu installation ausgewählt" >> /tmp/harderscript.log
+  echo "Iptables nicht zu Installation ausgewählt" >> /tmp/harderscript.log
 else
 iptablesper=$(apt install iptables-persistent | grep -i "ist schon die neueste Version" >/dev/null && echo JA || echo NEIN)
 if [ $iptablesper = "JA" ]
@@ -158,8 +158,8 @@ else
 fi
 fi
 clearandsleep
-sudo=`type -p sudo`
-if [ ! -f "$sudo" ]; then
+sudo=`type -p sudo -V`
+if [ ! -f $sudo ]; then
   echo "${RED}sudo missing..${NOCOLOR}Installiere"
   sleep 2s
   clear
@@ -200,7 +200,7 @@ else
   clearandsleep
   echo "Pruefe ob " $packagename "installiert wurde...(!unstable!)"
   varpackage=`type -p $packagename`
-  if [ ! -f "$packagename" ]; then
+  if [ ! -f $packagename ]; then
     echo $packagename " missing.."
     clearandsleep
   else
@@ -298,8 +298,8 @@ do
          break
          ;;
          [nN][oO]|[nN])
-         echo "SSH Banner verwurfen"
-         echo "SSH Banner verwurfen" >> /tmp/harderscript.log
+         echo "SSH Banner verworfen"
+         echo "SSH Banner verworfen" >> /tmp/harderscript.log
          break
          ;;
          *)
@@ -351,7 +351,9 @@ case $input in
      echo "Bitte geben Sie den Nutzernamen ein:"
      read username
      sudo adduser $username --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
-     echo ""$username":password" | sudo chpasswd
+     echo "Bitte geben Sie das Passwort für den neuen Benutzer an:"
+     read password
+     echo "$username:$password" | sudo chpasswd
      usermod -aG sudo $username
      clearandsleep
      userverify=$(cat /etc/group | grep $username >/dev/null && echo JA || echo NEIN)
@@ -441,7 +443,7 @@ else
   #Prüfung ob Programme installiert wurden
   echo "Testing if programms were installed sucessfully...${RED}!(unstable)${NOCOLOR}"
   fail2ban=`type -p fail2ban-server`
-  if [ ! -f "$fail2ban" ]; then
+  if [ ! -f $fail2ban ]; then
     echo "${RED}Fail2ban cloud be missing..${NOCOLOR}"
   else
     echo "${GREEN}Fail2ban ready!${NOCOLOR}"
@@ -457,8 +459,8 @@ else
     echo "iptables missing?" >> /tmp/harderscript.log
   fi
   clearandsleep
-  sudo=`type -p sudo`
-  if [ ! -f "$sudo" ]; then
+  sudo=`type -p sudo -V`
+  if [ ! -f $sudo ]; then
     echo "${RED}sudo missing..${NOCOLOR}Starting installation"
     apt install sudo -y
     echo "sudo installed" >> /tmp/harderscript
@@ -498,7 +500,7 @@ else
     clearandsleep
     echo "Testing if " $packagename "is ready...(!unstable!)"
     varpackage=`type -p $packagename`
-    if [ ! -f "$packagename" ]; then
+    if [ ! -f $packagename ]; then
       echo $packagename " missing.."
       clearandsleep
     else
@@ -649,7 +651,9 @@ else
        echo "Please enter the username:"
        read username
        sudo adduser $username --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
-       echo ""$username":password" | sudo chpasswd
+       echo "Please enter the Passwort for the new user:"
+       read password
+       echo "$username:$password" | sudo chpasswd
        usermod -aG sudo $username
        clearandsleep
        userverify=$(cat /etc/group | grep $username >/dev/null && echo JA || echo NEIN)
