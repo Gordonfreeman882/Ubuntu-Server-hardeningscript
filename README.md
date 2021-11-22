@@ -2,9 +2,9 @@
 
 # content
 * [Features](#Features)
-* [Optional features](#Optional&nbsp;features)
+* [Optional features](#Optional%20features)
 * [Requirements](#Requirements)
-* [Future updates](#Future&nbsp;updates)
+* [Future updates](#Future%20updates)
 * [Usage](#Usage)
 
 # Features:
