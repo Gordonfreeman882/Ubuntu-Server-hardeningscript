@@ -1,10 +1,10 @@
 # Ubuntu Harderscript v.0.0.6
 
 # content
-* [Features](#Features:)
-* [Optional features](#Optional features:)
-* [Requirements](#Requirements:)
-* [Future updates](#Future updates:)
+* [Features](#Features)
+* [Optional features](#Optional&nbsp;features)
+* [Requirements](#Requirements)
+* [Future updates](#Future&nbsp;updates)
 * [Usage](#Usage)
 
 # Features:
@@ -33,7 +33,7 @@
 - support for Debian
 - improve colorful output
 
-# Usage
+# Usage:
 
 ```
 $ git clone https://github.com/Gordonfreeman882/Ubuntu-Server-hardeningscript.git
