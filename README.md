@@ -2,9 +2,9 @@
 
 # content
 * [Features](#Features)
-* [Optional features](#Optional%20features:)
+* [Optional features](#Optional%20features)
 * [Requirements](#Requirements)
-* [Future updates](#Future%20update:s)
+* [Future updates](#Future%20updates)
 * [Usage](#Usage)
 
 # Features:
@@ -18,10 +18,10 @@
 # Optional features:
 - install iptables-persistent
 - install additional packages via name for apt during script routine
-- deactivate root-login on ssh-server
-- creates new user with sudo rights
-- rootkit-search with rkhunter
+- harden ssh-server
 - setup ssh login banner
+- create new user with sudo rights
+- rootkit-search with rkhunter
 
 # Requirements:
 - tested on fresh installed Ubuntu 20.04 LTS 18.04 LTS, 16.04 LTS [Server]
@@ -32,6 +32,7 @@
 - smarter language detection routine
 - support for Debian
 - improve colorful output
+- disable ipv6
 
 # Usage:
 
