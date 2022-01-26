@@ -137,8 +137,8 @@ fi
 #Prüfung ob Programme installiert wurden
 echo "Prüfe ob Programme Ordnungsgemäß installiert wurden...${RED}!(unstable)!${NOCOLOR}"
 clearandsleep
-fail2ban=`type -p fail2ban-server`
-if [ ! -f $fail2ban ]; then
+fail2ban=$(type fail2ban-server >/dev/null && echo "JA" || echo "NEIN")
+if [ $fail2ban = "NEIN" ]; then
   echo "${RED}Fail2ban könnte fehlen..${NOCOLOR}"
 else
   echo "${GREEN}Fail2ban vorhanden!${NOCOLOR}"
@@ -147,7 +147,7 @@ if [ $iptables = 0 ]
 then
   echo "Iptables nicht zu Installation ausgewählt" >> /tmp/harderscript.log
 else
-iptablesper=$(apt install iptables-persistent | grep -i "ist schon die neueste Version" >/dev/null && echo JA || echo NEIN)
+iptablesper=$(type iptables-persistent >/dev/null && echo "JA" || echo "NEIN")
 if [ $iptablesper = "JA" ]
 then
   echo "iptables-persistent vorhanden!"
@@ -158,8 +158,9 @@ else
 fi
 fi
 clearandsleep
-sudo=`type -p sudo -V`
-if [ ! -f $sudo ]; then
+sudo=$(type sudo >/dev/null && echo "JA" || echo "NEIN")
+if [ $sudo = "NEIN" ]
+then
   echo "${RED}sudo missing..${NOCOLOR}Installiere"
   sleep 2s
   clear
@@ -198,13 +199,13 @@ else
   apt install $packagename -y
   echo "zusaetzliches Paket" $packagename >> /tmp/harderscript.log
   clearandsleep
-  echo "Pruefe ob " $packagename "installiert wurde...(!unstable!)"
-  varpackage=`type -p $packagename`
-  if [ ! -f $packagename ]; then
-    echo $packagename " missing.."
+  echo "Pruefe ob "$packagename "installiert wurde...(!unstable!)"
+  varpackage=$(type $packagename >/dev/null && echo "JA" || echo "NEIN")
+  if [ $varpackage = "NEIN" ]; then
+    echo $packagename "missing.."
     clearandsleep
   else
-    echo $packagename " vorhanden!"
+    echo $packagename "vorhanden!"
     clearandsleep
   fi
 fi
@@ -219,8 +220,9 @@ do
 
  case $input in
      [yY][eE][sS]|[yY])
- echo "Verbiete Root Login via SSH"
+ echo "Verbiete Root Login via SSH und verstecke Versionsnummer des SSH-Servers"
  sed -i -e 's/#PermitRootLogin prohibit-password/PermitRootLogin no/g' $path
+ echo 'DebianBanner no' | tee -a /etc/ssh/sshd_config
  echo "SSH Rootlogin verboten" >> /tmp/harderscript.log
  break
  ;;
@@ -359,8 +361,8 @@ case $input in
      userverify=$(cat /etc/group | grep $username >/dev/null && echo JA || echo NEIN)
      if [ $userverify = "JA" ]
      then
-      echo "Es wurde ein neuer Nutzer " $username "angelegt."
-      echo "Es wurde ein neuer Nutzer " $username "angelegt." >> /tmp/harderscript.log
+      echo "Es wurde ein neuer Nutzer "$username" angelegt."
+      echo "Es wurde ein neuer Nutzer "$username" angelegt." >> /tmp/harderscript.log
       clearandsleep
       echo "Es wird empfohlen sich als Nutzer" $username "anzumelden und das root Konto mit dem Befehl sudo passwd -l root zu deaktivieren!";
       echo " Wir sind nun fertig. Ein Logfile befindet sich unter /tmp/harderscript.log"
@@ -442,15 +444,16 @@ else
   fi
   #Prüfung ob Programme installiert wurden
   echo "Testing if programms were installed sucessfully...${RED}!(unstable)${NOCOLOR}"
-  fail2ban=`type -p fail2ban-server`
-  if [ ! -f $fail2ban ]; then
+  fail2ban=$(type fail2ban-server >/dev/null && echo "YES" || echo "NO")
+  if [ $fail2ban = "NO" ]
+  then
     echo "${RED}Fail2ban cloud be missing..${NOCOLOR}"
   else
     echo "${GREEN}Fail2ban ready!${NOCOLOR}"
   fi
   clearandsleep
-  iptablesper=$(apt install iptables-persistent | grep -i "newest" >/dev/null && echo JA || echo NEIN)
-  if [ $iptablesper = "JA" ]
+  iptablesper=$(type iptables-persistent >/dev/null && echo "YES" || echo "NO")
+  if [ $iptablesper = "YES" ]
   then
     echo "${GREEN}iptables-persistent ready!${NOCOLOR}"
     echo "iptables ready" >> /tmp/harderscript.log
@@ -459,13 +462,13 @@ else
     echo "iptables missing?" >> /tmp/harderscript.log
   fi
   clearandsleep
-  sudo=`type -p sudo -V`
-  if [ ! -f $sudo ]; then
+  sudo=$(type sudo >/dev/null && echo "YES" || echo "NO")
+  if [ $sudo = "NO" ]; then
     echo "${RED}sudo missing..${NOCOLOR}Starting installation"
     apt install sudo -y
     echo "sudo installed" >> /tmp/harderscript
   else
-    echo "sudo ready!"
+    echo "${GREEN}sudo ready!${NOCOLOR}"
   fi
   clearandsleep
   #Zusätzliche Installation von Paketen
@@ -499,12 +502,12 @@ else
     echo "additional package" $packagename >> /tmp/harderscript.log
     clearandsleep
     echo "Testing if " $packagename "is ready...(!unstable!)"
-    varpackage=`type -p $packagename`
-    if [ ! -f $packagename ]; then
-      echo $packagename " missing.."
+    varpackage=$(type $packagename >/dev/null && echo "YES" || echo "NO" )
+    if [ $packagename  = "NO" ]; then
+      echo $packagename "missing.."
       clearandsleep
     else
-      echo $packagename " ready!"
+      echo $packagename "ready!"
       clearandsleep
     fi
   fi
@@ -519,8 +522,9 @@ else
 
    case $input in
        [yY][eE][sS]|[yY])
-   echo "Forbid Root Login via SSH"
+   echo "Forbid Root Login via SSH and hide versionnumber of ssh-server"
    sed -i -e 's/#PermitRootLogin prohibit-password/PermitRootLogin no/g' $path
+   echo 'DebianBanner no' | tee -a /etc/ssh/sshd_config
    echo "Forbid SSH Rootlogin" >> /tmp/harderscript.log
    break
    ;;
