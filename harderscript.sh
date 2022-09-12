@@ -271,7 +271,7 @@ do
   read -r -p "Soll das Login-Banner für den SSH-Login verwendet werden? [Y/n] " input
   case $input in
         [yY][eE][sS]|[yY])
-        echo "Banner /etc/issue.net" >> $path
+        rm /etc/issue.net
         echo "                                                                     #####
                                                                     #######
                        @                                            ##O#O##
@@ -574,7 +574,7 @@ else
     read -r -p "Do you want to use this for SSH-login? [Y/n] " input
     case $input in
           [yY][eE][sS]|[yY])
-          echo "Banner /etc/issue.net" >> $path
+          rm /etc/issue.net
           echo "                                                                       #####
                                                                       #######
                          @                                            ##O#O##
