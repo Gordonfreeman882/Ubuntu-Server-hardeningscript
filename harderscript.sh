@@ -452,14 +452,19 @@ else
     echo "${GREEN}Fail2ban ready!${NOCOLOR}"
   fi
   clearandsleep
-  iptablesper=$(type iptables-persistent >/dev/null && echo "YES" || echo "NO")
-  if [ $iptablesper = "YES" ]
+  if [ $iptables = 0 ]
   then
-    echo "${GREEN}iptables-persistent ready!${NOCOLOR}"
-    echo "iptables ready" >> /tmp/harderscript.log
+    echo "Iptables not installed" >> /tmp/harderscript.log
   else
-    echo "${RED}iptables-persistent missing..${NOCOLOR}"
-    echo "iptables missing?" >> /tmp/harderscript.log
+    iptablesper=$(type iptables-persistent >/dev/null && echo "YES" || echo "NO")
+    if [ $iptablesper = "YES" ]
+    then
+      echo "${GREEN}iptables-persistent ready!${NOCOLOR}"
+      echo "iptables ready" >> /tmp/harderscript.log
+    else
+      echo "${RED}iptables-persistent missing..${NOCOLOR}"
+      echo "iptables missing?" >> /tmp/harderscript.log
+    fi
   fi
   clearandsleep
   sudo=$(type sudo >/dev/null && echo "YES" || echo "NO")
