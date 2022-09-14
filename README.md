@@ -24,7 +24,7 @@
 - rootkit-search with rkhunter
 
 # Requirements:
-- tested on fresh installed Ubuntu 20.04 LTS 18.04 LTS, 16.04 LTS [Server]
+- tested on fresh installed Ubuntu 22.04 LTS, 20.04 LTS, 18.04 LTS, 16.04 LTS [Server]
 - run script as root or as user with root priviliges
 - optional but important, openssh-server
 
